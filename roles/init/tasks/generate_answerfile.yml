@@ -1,0 +1,4 @@
+- name: Generate answerfile with most common options
+  shell: leapp answer --section "{{item}}" --add
+  with_items:
+    - remove_pam_pkcs11_module_check.confirm=True

@@ -1,0 +1,14 @@
+leapp_pkg: "{{ 'leapp-0*-0.*.pr' + framework_pr + '.*' if framework_pr else 'leapp-0*master*' }}"
+leapp_repository_pkg: "{{ 'leapp-upgrade-el7toel8*.pr' + repository_pr + '.*' if repository_pr else 'leapp-upgrade-el7toel8-0*master*' }}"
+leapp_pkgs: ["{{ leapp_pkg }}", "{{ leapp_repository_pkg }}"]
+leapp_data_path: '/etc/leapp/files/'
+rhsm_account: 
+rhsm_password: 
+rhsm_pool_ids: []
+non_eus_repositories: ['rhel-7-server-rpms', 'rhel-7-server-optional-rpms', 'rhel-7-server-extras-rpms']
+required_repositories: "{{ non_eus_repositories }}"
+satellite_host: 
+satellite_org: "Default_Organization"
+# Upgrade source RHEL version in order to set RHSM to fix release
+rhel_source_ver: "7.9"
+generate_answerfile: True

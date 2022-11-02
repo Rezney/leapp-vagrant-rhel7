@@ -1,0 +1,10 @@
+- name: Install Satellite certificate
+  yum:
+    name: "http://{{ satellite_host }}/pub/katello-ca-consumer-latest.noarch.rpm"
+    state: present
+
+- name: Register and subscribe to Satellite
+  redhat_subscription:
+    activationkey: "LeappKey"
+    org_id: "{{ satellite_org }}"
+

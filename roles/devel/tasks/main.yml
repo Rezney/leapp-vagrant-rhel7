@@ -1,0 +1,51 @@
+- name: Install packages for development
+  dnf:
+    # dnf is installed at this point as a dependency of leapp
+    # using it instead of yum lowers the time from 35secs to 5secs
+    name: '{{ devel_pkgs }}'
+    state: present
+    disable_gpg_check: yes
+
+#NOTE(ivasilev) once leapp-inspector is packaged it may be installed as part of Install packages task
+- name: Fetch leapp-inspector script
+  get_url:
+    dest: "/usr/bin/leapp-inspector"
+    url: "{{leapp_inspector_script}}"
+
+- name: Make leapp-inspector a python2 executable
+  lineinfile:
+    path: "/usr/bin/leapp-inspector"
+    regexp: '#!/usr/bin/python3'
+    line: '#!/usr/bin/python2'
+    mode: '0755'
+
+- name: Disable SSL with git
+  git_config:
+    name: http.sslVerify
+    scope: global
+    value: false
+  become_user: '{{ user }}'
+
+- name: Clone leapp-repository
+  git:
+    repo: https://github.com/oamg/leapp-repository.git
+    dest: '{{ ansible_env.HOME }}/leapp-repository'
+  become_user: '{{ user }}'
+
+- name: Scan leapp repos with snactor
+  command: snactor repo find --path {{ item }}
+  with_items:
+    - '/etc/leapp/repos.d'
+  become_user: '{{ user }}'
+
+- name: Update all packages
+  shell: yum update --exclude=*leapp* --exclude=snactor -y
+  register: update
+  when:
+
+- name: Reboot after updating all packages
+  reboot:
+
+- name: Show output of the previous yum call
+  debug:
+    var: update.stdout_lines

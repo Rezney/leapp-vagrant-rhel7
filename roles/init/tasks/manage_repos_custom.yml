@@ -1,0 +1,12 @@
+- name: Copy source RHEL repositories
+  copy:
+    src: 'rhel-source.repo'
+    dest: /etc/yum.repos.d
+
+- name: Cat rhel-source.repo for checking purposes
+  shell: cat /etc/yum.repos.d/rhel-source.repo
+  register: cat
+
+- name: Check if rhel-source.repo is not empty
+  fail: msg="You have chosen 'custom' repositories as a source and target content delivery option but 'rhel-source.repo' is empty. Please make sure there are at least Base and Extras repositories."
+  when: cat.stdout == ""

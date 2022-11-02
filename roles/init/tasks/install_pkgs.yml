@@ -1,0 +1,23 @@
+- name: Install Leapp Copr repository
+  copy:
+    src: 'leapp-copr.repo'
+    dest: /etc/yum.repos.d
+
+- name: Show leapp packages list to be passed to yum module
+  debug:
+    msg: '{{ leapp_pkgs }}'
+
+- name: Install leapp and leapp-repository packages
+  yum:
+    name: '{{ leapp_pkgs }}'
+    disable_plugin: '*'
+    state: installed
+    # we no longer build the sos-plugin subpackage but it still resides
+    # in the copr repo and it causes a dnf failure when installing a rebased
+    # build of the opened leapp-repository PRs
+    exclude: leapp-repository-sos-plugin
+  register: yum_res
+
+- name: Show output of the previous yum call
+  debug:
+    msg: "{{ yum_res.results[0].split('\n') }}"
