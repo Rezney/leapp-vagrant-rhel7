@@ -1,0 +1,11 @@
+- name: Check wheteher 'rhsm_account' and 'rhsm_password' variables are set when using RHSM
+  fail: msg="When using 'SRC=rhsm' make sure you provided the follwoing vars 'rhsm_account' and 'rhsm_password'"
+  when: not rhsm_account
+
+- name: Set up RHSM subscription
+  redhat_subscription:
+    auto_attach: yes
+    username: '{{ rhsm_account }}'
+    password: '{{ rhsm_password }}'
+    pool_ids: '{{ rhsm_pool_ids }}'
+

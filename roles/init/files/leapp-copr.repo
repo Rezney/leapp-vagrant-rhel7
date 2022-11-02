@@ -1,0 +1,11 @@
+[leapp-copr]
+name=Copr repo for leapp owned by @oamg
+baseurl=https://download.copr.fedorainfracloud.org/results/@oamg/leapp/epel-7-$basearch/
+type=rpm-md
+skip_if_unavailable=True
+gpgcheck=1
+gpgkey=https://download.copr.fedorainfracloud.org/results/@oamg/leapp/pubkey.gpg
+repo_gpgcheck=0
+enabled=1
+enabled_metadata=1
+metadata_expire=1

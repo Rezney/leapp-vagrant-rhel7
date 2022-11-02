@@ -1,0 +1,4 @@
+snactor_pkg: "{{ 'snactor*.PR' + framework_pr + '.*' if framework_pr else 'snactor' }}"
+devel_pkgs: ["python-devel", "git", "python-virtualenv", "{{ snactor_pkg }}"]
+leapp_inspector_script: "https://raw.githubusercontent.com/oamg/snippets/master/scripts/leappinspector/leapp-inspector"
+user: root

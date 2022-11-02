@@ -1,0 +1,58 @@
+- name: Add permit root login
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    line: "PermitRootLogin yes"
+
+- name: Remove unsupported modules
+  shell: rmmod floppy pata_acpi
+  ignore_errors: True
+
+- name: Remove kernel-devel package to avoid an inhibitor
+  yum:
+    name: kernel-devel
+    state: absent
+
+- name: Copy preprepared modprobe conf in order to permanently disable included modules
+  copy:
+    src: local-dontload.conf
+    dest: /etc/modprobe.d/local-dontload.conf
+
+- name: Copy target RHEL repositories
+  copy:
+    src: 'leapp_upgrade_repositories.repo'
+    dest: /etc/leapp/files
+  when: src == "custom"
+
+- name: Cat leapp_upgrade_repositories.repo for checking purposes
+  shell: cat /etc/leapp/files/leapp_upgrade_repositories.repo
+  register: cat
+  when: src == "custom"
+
+- name: Check if leapp_upgrade_repositories.repo is not empty
+  fail: msg="You have chosen 'custom' repositories as a source and target content delivery option but 'leapp_upgrade_repositories.repo' file (for delivering target system repositories) is empty. Please make sure there are at least BaseOS and AppStream repositories."
+  when: cat.stdout == "" and src == "custom"
+
+- name: Enable LEAPP_UNSUPPORTED env var
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    line: "export LEAPP_UNSUPPORTED=1"
+
+- name: Enable LEAPP_NO_RHSM env var
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    line: "export LEAPP_NO_RHSM=1"
+  when: src == "custom"
+
+- name: Enable LEAPP_UNSUPPORTED (to enable devel functionality)
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    line: "export LEAPP_UNSUPPORTED=1"
+
+- name: Enable LEAPP_DEVEL_DATABASE_SYNC_OFF ( to speed up the upgrade process)
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    line: "export LEAPP_DEVEL_DATABASE_SYNC_OFF=1"

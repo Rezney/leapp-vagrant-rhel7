@@ -1,0 +1,15 @@
+- name: Wait 1 sec here (slow Sattelite issue)
+  shell: sleep 1
+  when: src == "sat"
+
+- name: Set RHSM source release
+  shell: "subscription-manager release --set={{ rhel_source_ver }}"
+  ignore_errors: True
+
+- name: Disable repositories using RHSM
+  command: subscription-manager repos --disable '*'
+
+- name: Enable required repositories using RHSM
+  command: subscription-manager repos --enable {{ item }}
+  with_items:
+    - '{{ required_repositories }}'

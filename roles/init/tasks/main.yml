@@ -1,0 +1,21 @@
+---
+- name: Check if our Satellite server is ok
+  uri:
+    url: "https://{{ satellite_host }}/katello/api/ping"
+    return_content: yes
+    validate_certs: no
+  register: sat_ping
+  when: src == "sat"
+
+- include: subscribe_rhsm.yml
+  when: src == "rhsm"
+- include: subscribe_satellite.yml
+  when: src == "sat" and (sat_ping.content|from_json)['status'] == 'ok'
+- include: manage_repos_rhsm.yml
+  when: src != "custom"
+- include: manage_repos_custom.yml
+  when: src == "custom"
+- include: install_pkgs.yml
+- include: preupgrade_workarounds.yml
+- include: generate_answerfile.yml
+  when: generate_answerfile|bool
