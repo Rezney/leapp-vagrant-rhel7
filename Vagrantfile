@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
   end
   src = ENV['SRC'] || "rhsm"
   if src and src != "rhsm" && src != "sat" && src != "custom"
-    puts "ERROR: The allowed values for SRC environment var are: rhsm, sat and custom (default)"
+    puts "ERROR: The allowed values for SRC environment var are: rhsm (default), sat and custom"
     exit
   end
   framework_pr = ENV['FPR']
