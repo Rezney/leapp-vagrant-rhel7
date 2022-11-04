@@ -1,0 +1,39 @@
+- name: Run upgrade with RHSM
+  shell: leapp upgrade --debug
+  when: src != "custom"
+
+- name: Run upgrade with custom repos
+  shell: LEAPP_NO_RHSM=1 leapp upgrade --debug
+  when: src == "custom"
+
+- name: Reboot and wait for server to come back
+  reboot:
+
+- name: Show release
+  vars:
+    ansible_python_interpreter: /usr/bin/python2
+  shell: cat /etc/redhat-release
+  register: release
+  failed_when: "'Ootpa' not in release.stdout"
+
+- debug:
+    var: release.stdout_lines
+
+- name: Show kernel
+  vars:
+    ansible_python_interpreter: /usr/bin/python2
+  shell: uname -r
+  register: kernel
+  failed_when: "'el8' not in kernel.stdout"
+
+- debug:
+    var: kernel.stdout_lines
+
+- name: Packages count
+  vars:
+    ansible_python_interpreter: /usr/bin/python2
+  shell: rpm -qa | wc -l
+  register: rpm
+
+- debug:
+    var: rpm.stdout_lines

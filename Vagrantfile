@@ -61,6 +61,12 @@ Vagrant.configure("2") do |config|
   #config.ssh.password = 'vagrant'
   config.ssh.insert_key = true
 
+  config.vm.provision "upgrade", run: "never", type: "ansible" do |upgrade|
+    upgrade.playbook = "run_upgrade.yml"
+    upgrade.become = true
+    upgrade.extra_vars = {src: src}
+  end
+
   # Forward cockpit port
   config.vm.network "forwarded_port", guest: 9090, host: 9090
 end

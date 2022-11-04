@@ -1,0 +1,5 @@
+- hosts: all
+  become: true
+  ignore_unreachable: yes
+  roles:
+   - upgrade

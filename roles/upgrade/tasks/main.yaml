@@ -1,0 +1,4 @@
+---
+- include: set_static_ip.yml
+  when: set_static_ip
+- include: upgrade.yml

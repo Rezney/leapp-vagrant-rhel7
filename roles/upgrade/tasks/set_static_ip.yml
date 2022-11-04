@@ -1,0 +1,26 @@
+- name: Set BOOTPROTO to static
+  replace:
+    path: "/etc/sysconfig/network-scripts/ifcfg-{{ ansible_facts['default_ipv4']['interface'] }}"
+    regexp: 'BOOTPROTO=dhcp'
+    replace: 'BOOTPROTO=static'
+
+- name: Set static IP
+  lineinfile:
+    path: "/etc/sysconfig/network-scripts/ifcfg-{{ ansible_facts['default_ipv4']['interface'] }}"
+    line: "IPADDR={{ ansible_facts['default_ipv4']['address'] }}"
+
+- name: Set netmask
+  lineinfile:
+    path: "/etc/sysconfig/network-scripts/ifcfg-{{ ansible_facts['default_ipv4']['interface'] }}"
+    line: "NETMASK={{ ansible_facts['default_ipv4']['netmask'] }}"
+
+- name: Set gateway
+  lineinfile:
+    path: "/etc/sysconfig/network-scripts/ifcfg-{{ ansible_facts['default_ipv4']['interface'] }}"
+    line: "GATEWAY={{ ansible_facts['default_ipv4']['gateway'] }}"
+
+- name: Set DNS
+  lineinfile:
+    path: "/etc/sysconfig/network-scripts/ifcfg-{{ ansible_facts['default_ipv4']['interface'] }}"
+    line: "DNS1={{ ansible_facts['dns']['nameservers'][0] }}"
+
