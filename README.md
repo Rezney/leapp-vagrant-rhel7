@@ -31,6 +31,21 @@ you set):
 SYSTEM_SESSION=1 vagrant up
 ```
 
+If you want to start upgrade directly, please issue:
+
+```bash
+vagrant up --provision-with setup,upgrade
+```
+
+This way the upgrade will be automatically started, we will wait
+for RHEL8 box to come up and then check if the upgrade was successful.
+
+In case of manual upgrade and when you use custom repositories, please issue upgrade as:
+
+```bash
+LEAPP_NO_RHSM=1 leapp upgrade
+```
+
 If you want to test a specific PR from "leapp-repository" repo you can run:
 
 ```bash
